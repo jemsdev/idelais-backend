@@ -1,0 +1,158 @@
+var invoiceList = $('#invoice-list').DataTable({
+    "dom": "<'inv-list-top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'l<'dt-action-buttons align-self-center'B>><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f<'toolbar align-self-center'>>>>" +
+        "<'table-responsive'tr>" +
+        "<'inv-list-bottom-section d-sm-flex justify-content-sm-between text-center'<'inv-list-pages-count  mb-sm-0 mb-3'i><'inv-list-pagination'p>>",
+
+    // headerCallback:function(e, a, t, n, s) {
+    //     e.getElementsByTagName("th")[0].innerHTML=`
+    //     <div class="form-check form-check-primary d-block new-control">
+    //         <input class="form-check-input chk-parent" type="checkbox" id="form-check-default">
+    //     </div>`
+    // },
+    // columnDefs:[{
+    //     targets:0,
+    //     width:"30px",
+    //     className:"",
+    //     orderable:!1,
+    //     render:function(e, a, t, n) {
+    //         return `
+    //         <div class="form-check form-check-primary d-block new-control">
+    //             <input class="form-check-input child-chk" type="checkbox" id="form-check-default">
+    //         </div>`
+    //     },
+    // }],
+    buttons: [
+        {
+            text: 'ID',
+            className: 'btn btn-danger',
+            attr:  {                
+                id: 'btnId'
+            },            
+        },
+        {
+            text: 'ENG',
+            className: 'btn',
+            attr:  {                
+                id: 'btnEng'
+            },            
+        },
+    ],    
+    "oLanguage": {
+        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+        "sInfo": "Showing page _PAGE_ of _PAGES_",
+        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+        "sSearchPlaceholder": "Search...",
+        "sLengthMenu": "Results :  _MENU_",
+    },
+    "stripeClasses": [],
+    "lengthMenu": [10, 20, 50],
+    "pageLength": 10
+});
+
+$("div.toolbar").html(`
+<button class="dt-tambah btn btn-primary" tabindex="0" aria-controls="invoice-list"><span>Tambah</span></button>
+`);
+
+multiCheck(invoiceList);
+
+$('.dt-tambah').on('click', function() {
+    var lang = $('#lang').val();
+    $('#santriModal').modal('show');
+    $('#exampleModalLabel').html(`Tambah ${lang}`);
+    $('#saldo').hide();  
+    
+    document.getElementById('kegiatan_jasa').readOnly = false;
+    $('#kegiatan_jasa').val('');
+    $('#kriteria').val('');
+    $('#type').val('');
+    quill.pasteHTML('');
+    quill2.pasteHTML('');    
+    
+    if (lang == 'Food Safety-ID') {
+        $('#type').append($('<option>', {value:'GMP', text:'Pendampingan GMP'}));
+        $('#type').append($('<option>', {value:'ISO 22000', text:'Pendampingan ISO 22000'}));
+        $('#type').append($('<option>', {value:'BRC', text:'Pendampingan BRC'}));
+        $('#type').append($('<option>', {value:'Hygiene dan Sanitasi', text:'Pendampingan Hygiene dan Sanitasi'}));
+        $('#type').append($('<option>', {value:'Standar Keamanan Pangan', text:'Pendampingan Standar Keamanan Pangan'}));
+        $('#type').append($('<option>', {value:'Standar Manajemen Kualitas', text:'Pendampingan Standar Manajemen Kualitas'}));  
+    } else {
+        $('#type').append($('<option>', {value:'HACCP', text:'HACCP Assistance'}));
+        $('#type').append($('<option>', {value:'GMP', text:'GMP Assistance'}));
+        $('#type').append($('<option>', {value:'ISO 22000', text:'ISO 22000 Assistance'}));
+        $('#type').append($('<option>', {value:'BRC', text:'BRC Assistance'}));
+        $('#type').append($('<option>', {value:'Hygiene dan Sanitasi', text:'Hygiene and Sanitation Assistance'}));
+        $('#type').append($('<option>', {value:'Standar Keamanan Pangan', text:'Food Safety Standard Assistance'}));
+        $('#type').append($('<option>', {value:'Standar Manajemen Kualitas', text:'Quality Management Standard Assistance'}));
+    }    
+});
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const lang = urlParams.get('lang')
+const pathname = window.location.pathname;
+
+$('#btnEng').on('click', function() {    
+    window.location = pathname + '?lang=eng';
+});
+$('#btnId').on('click', function() {
+    window.location = pathname;
+});
+
+var search = window.location.search;
+var elementId = document.getElementById("btnId");
+var elementEng = document.getElementById("btnEng");
+if (search) {
+    elementId.classList.remove("btn-danger");
+    elementEng.classList.add("btn-primary");   
+}
+
+$('.dt-import').on('click', function() {
+    $('#importModal').modal('show');
+});
+
+$('body').on('click', '#editText', function (event) {
+
+    event.preventDefault();
+    var id = $(this).data('id');    
+
+    if (lang == 'Food Safety-ID') {
+        $('#type').append($('<option>', {value:'GMP', text:'Pendampingan GMP'}));
+        $('#type').append($('<option>', {value:'ISO 22000', text:'Pendampingan ISO 22000'}));
+        $('#type').append($('<option>', {value:'BRC', text:'Pendampingan BRC'}));
+        $('#type').append($('<option>', {value:'Hygiene dan Sanitasi', text:'Pendampingan Hygiene dan Sanitasi'}));
+        $('#type').append($('<option>', {value:'Standar Keamanan Pangan', text:'Pendampingan Standar Keamanan Pangan'}));
+        $('#type').append($('<option>', {value:'Standar Manajemen Kualitas', text:'Pendampingan Standar Manajemen Kualitas'}));  
+    } else {
+        $('#type').append($('<option>', {value:'HACCP', text:'HACCP Assistance'}));
+        $('#type').append($('<option>', {value:'GMP', text:'GMP Assistance'}));
+        $('#type').append($('<option>', {value:'ISO 22000', text:'ISO 22000 Assistance'}));
+        $('#type').append($('<option>', {value:'BRC', text:'BRC Assistance'}));
+        $('#type').append($('<option>', {value:'Hygiene dan Sanitasi', text:'Hygiene and Sanitation Assistance'}));
+        $('#type').append($('<option>', {value:'Standar Keamanan Pangan', text:'Food Safety Standard Assistance'}));
+        $('#type').append($('<option>', {value:'Standar Manajemen Kualitas', text:'Quality Management Standard Assistance'}));
+    }
+
+
+    // document.getElementById('kegiatan_jasa').readOnly = true;
+
+    $.get(pathname + '/' + id + queryString, function (data) {        
+         $('#editForm').attr('action', pathname + '/update/' + id);         
+         $('#exampleModalLabel').html('Edit Text');      
+         $('#santriModal').modal('show');
+         $('#kegiatan_jasa').val(data.data.activity);         
+         $('#kriteria').val(data.data.criteria);         
+         $('#type').val(data.data.type);         
+        //  $('#editor').append(data.data.text);  
+        quill.pasteHTML(data.data.text);       
+        quill2.pasteHTML(data.data.output);       
+      })
+});
+
+$('#santriModal').on('hidden.bs.modal', function () {
+    $("#type").html(``)
+  })
+
+
+// $('.action-delete').on('click', function() {
+//     $(this).parents('tr').remove();
+// })
