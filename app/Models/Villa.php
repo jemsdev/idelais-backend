@@ -11,14 +11,13 @@ class Villa extends Model
 
     protected $fillable = [
         'sub_category_id',
-        'sub_category_value',
         'thumbnail',
         'description',
         'whatsapp_number',
-        'sub_district',
         'price',
         'code',
-        'is_recommendation'
+        'is_recommendation',
+        'alamat'
     ];
 
     public function subCategory()

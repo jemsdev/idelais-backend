@@ -16,8 +16,7 @@ class CreateVillaFacilitiesTable extends Migration
         Schema::create('villa_facilities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('villa_id')->constrained()->onDelete('cascade');
-            $table->string('icon'); //custom icon berupa string
-            $table->string('title'); //nama fasilitasnya
+            $table->foreignId('fasilitas_id');
             $table->string('value')->nullable(); //cth. 7, ini diper-untukan buat icon yg ada valuenya misal 4 kamar, 7 orang) 
             $table->timestamps();
         });

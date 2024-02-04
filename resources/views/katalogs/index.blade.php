@@ -28,13 +28,28 @@
             <table id="invoice-list" class="table dt-table-hover" style="width:100%">
                 <thead>
                     <tr>                        
-                        <th>Nama</th>
-                        <th>Username</th>                        
-                        <th>Role</th>
+                        <th>Nama Villa</th>
+                        <th>Blok</th>
+                        <th>Harga</th>                        
+                        <th>Kode</th>
+                        <th>No Telp</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($data as $item)
+                    <tr>                        
+                        <td>{{$item->thumbnail}}</td>
+                        <td>{{$item->subCategory->title}}</td>
+                        <td>{{$item->price}}</td>                        
+                        <td>{{$item->code}}</td>
+                        <td>{{$item->whatsapp_number}}</td>
+                        <td>
+                            <a href="" class="btn btn-primary">edit</a>
+                            <a href="" class="btn btn-danger">hapus</a>
+                        </td>
+                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -47,45 +62,109 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color: #ffff;">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah User</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Katalog</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <svg> ... </svg>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="row g-3" action="{{route('user.store')}}" method="POST" id="editForm" enctype="multipart/form-data" autocomplete="off">
+                <form class="row g-3" action="{{route('katalog.store')}}" method="POST" id="editForm" enctype="multipart/form-data" autocomplete="off">
                     {{ csrf_field() }}
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                    <div class="col-md-12">
-                        <label class="form-label">Nama</label>
-                        <input name="full_name" id="full_name" type="text" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Jabatan</label>
-                        <input name="jabatan" id="jabatan" type="text" class="form-control" autocomplete="off">
+                    <div class="col-md-6">
+                        <label class="form-label">Nama Villa</label>
+                        <input name="thumbnail" id="thumbnail" type="text" class="form-control" autocomplete="off">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Username</label>
-                        <input autocomplete="off" name="username" id="username" type="text" class="form-control" placeholder="username">
-                    </div>                                       
-                    <div class="col-6">
-                        <label class="form-label">Role</label>
-                        <select name="role" class="form-control" autocomplete="off" id="role">
+                        <label class="form-label">Blok</label>
+                        <select name="sub_category_id" class="form-control" autocomplete="off" id="sub_category_id">
                             <option>- Pilih -</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Sales">Sales</option>
-                            <option value="Manager">Manager</option>
-                            <option value="Consultant">Consultant</option>
-                            <option value="Operation">Operation</option>
+                            <option value="1">Mawar</option>
+                            <option value="2">Tulip</option>
                         </select>
                     </div>
-                    <div class="col-6" id="f-password">
-                        <label class="form-label">Password</label>
-                        <input name="password" id="password" type="password" class="form-control" autocomplete="off">
+                    <div class="col-md-6">
+                        <label class="form-label">Harga</label>
+                        <input name="price" id="price" type="text" class="form-control" autocomplete="off">
                     </div>
-                    <div class="col-6" id="f-con-password">
-                        <label class="form-label">Confirm Password</label>
-                        <input name="con-password" id="con-password" type="password" class="form-control" autocomplete="off">
+                    <div class="col-md-6">
+                        <label class="form-label">Kode</label>
+                        <input autocomplete="off" name="code" id="code" type="text" class="form-control" placeholder="">
+                    </div>                                       
+                    <div class="col-6">
+                        <label class="form-label">No Telp</label>
+                        <input name="whatsapp_number" id="whatsapp_number" type="text" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="col-6" id="f-password">
+                        <label class="form-label">Rekomendasi</label>
+                        <input name="is_recommendation" id="is_recommendation" type="text" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Alamat</label>
+                        <textarea name="alamat" id="alamat" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Gambar</label>
+                        <div class="table-responsive">            
+                            <table class="table table-no-space table-bordered">
+                                <thead>
+                                <tr style="background-color: #AFE1AF;">
+                                    <th scope="col">Gambar</th>                                         
+                                    <th scope="col" class="text-center">
+                                        <span class="badge badge-success" onclick="create_tr('table_body_timeline')"><i class="fa fa-plus"></i><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+                                    </th>
+                                </tr>            
+                                </thead>
+                                <tbody id="table_body_timeline">
+                                    <tr>
+                                        <td>
+                                            <input type="file" required name="gambar[]" autocomplete="off" value="" class="form-control  form-control-sm" placeholder="Bulan">
+                                        </td>                                             
+                                        <td class="text-center">
+                                            <span class="badge badge-danger" onclick="remove_tr(this)"><i class="fa fa-close"></i>-</span>                    
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> 
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Fasilitas</label>
+                        <div class="table-responsive">            
+                            <table class="table table-no-space table-bordered">
+                                <thead>
+                                <tr style="background-color: #AFE1AF;">
+                                    <th scope="col">Fasilitas</th>                                         
+                                    <th scope="col">Jumlah</th>                                         
+                                    <th scope="col" class="text-center">
+                                        <span class="badge badge-success" onclick="create_tr('table_body_fasilitas')"><i class="fa fa-plus"></i><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+                                    </th>
+                                </tr>            
+                                </thead>
+                                <tbody id="table_body_fasilitas">
+                                    <tr>
+                                        <td>
+                                            <select name="fasilitas_id[]" class="form-control" autocomplete="off" id="fasilitas_id">
+                                                <option>- Pilih -</option>
+                                                @foreach ($fasilitas as $item)
+                                                <option value="{{$item->id}}">{{$item->title}}</option>                           
+                                                @endforeach
+                                            </select>
+                                        </td>   
+                                        <td>
+                                            <input name="value[]" id="value" type="text" class="form-control" autocomplete="off">
+                                        </td>                                          
+                                        <td class="text-center">
+                                            <span class="badge badge-danger" onclick="remove_tr(this)"><i class="fa fa-close"></i>-</span>                    
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
             </div>
             <div class="modal-footer">
@@ -129,5 +208,5 @@
 
 @endsection
 @push('custom-scripts')
-<script src="{{'/template'}}/src/assets/js/apps/user-list.js"></script>
+<script src="{{'/template'}}/src/assets/js/apps/katalog-list.js"></script>
 @endpush

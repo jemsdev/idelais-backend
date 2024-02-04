@@ -25,7 +25,8 @@ Route::controller(UserController::class)->group(function (){
 });
 
 Route::controller(KatalogController::class)->group(function (){
-    Route::get('/katalog', 'index')->name('user.index');
+    Route::get('/katalog', 'index')->name('katalog.index');
+    Route::post('/katalog', 'store')->name('katalog.store');
 });
 
 Route::controller(TransaksiController::class)->group(function (){
